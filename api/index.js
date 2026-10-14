@@ -192,6 +192,11 @@ function errorForUser(error) {
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
+    console.log("ALICE_WEBHOOK_HIT", {
+      method: req.method,
+      url: req.url,
+      time: new Date().toISOString()
+    });
     return res.status(200).json({
       ok: true,
       service: "alice-gemini-serper",
