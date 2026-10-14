@@ -113,7 +113,7 @@ async function searchWeb(query, timeoutMs) {
 async function askGemini(text, history, searchContext, timeoutMs) {
   const key = process.env.GEMINI_API_KEY;
   if (!key) throw new Error("MISSING_GEMINI_KEY");
-  if (timeoutMs < 250) throw new Error("TIME_BUDGET_EXHAUSTED");
+  if (timeoutMs < 8000) throw new Error("TIME_BUDGET_EXHAUSTED");
 
   const model = String(process.env.GEMINI_MODEL || DEFAULT_MODEL).trim();
   if (!/^[A-Za-z0-9._-]+$/.test(model)) throw new Error("INVALID_MODEL_NAME");
