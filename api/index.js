@@ -4,7 +4,7 @@ const MAX_HISTORY_MESSAGE_CHARS = 1200;
 const MAX_ALICE_TEXT = 1024;
 const TOTAL_RESPONSE_BUDGET_MS = 3600;
 const SERPER_TIMEOUT_MS = 600;
-const GEMINI_TIMEOUT_MS = 8000;
+const GEMINI_TIMEOUT_MS = 2500;
 
 const SYSTEM_PROMPT = [
   "Ты — полезный голосовой помощник в навыке Яндекс Алисы.",
@@ -191,13 +191,6 @@ function errorForUser(error) {
 }
 
 export default async function handler(req, res) {
-  console.log("[ALICE_DIAG] Handler entered", {
-    method: req.method,
-    url: req.url,
-    contentType: req.headers["content-type"],
-    time: new Date().toISOString()
-  });
-
   if (req.method === "GET") {
     return res.status(200).json({
       ok: true,
@@ -215,12 +208,6 @@ export default async function handler(req, res) {
   const remainingMs = () => TOTAL_RESPONSE_BUDGET_MS - (Date.now() - startedAt);
   const body = req.body && typeof req.body === "object" ? req.body : {};
   const text = String(body?.request?.command || body?.request?.original_utterance || "").trim();
-  console.log("[ALICE_DIAG] Request parsed", {
-  hasBody: !!req.body,
-  bodyKeys: Object.keys(body),
-  hasRequest: !!body.request,
-  textLength: text.length
-  });
   const oldHistory = safeHistory(body?.state?.session?.history);
 
   if (!text) {
