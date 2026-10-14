@@ -191,12 +191,14 @@ function errorForUser(error) {
 }
 
 export default async function handler(req, res) {
+  console.log("[ALICE_DIAG] Handler entered", {
+    method: req.method,
+    url: req.url,
+    contentType: req.headers["content-type"],
+    time: new Date().toISOString()
+  });
+
   if (req.method === "GET") {
-    console.log("ALICE_WEBHOOK_HIT", {
-      method: req.method,
-      url: req.url,
-      time: new Date().toISOString()
-    });
     return res.status(200).json({
       ok: true,
       service: "alice-gemini-serper",
@@ -213,6 +215,12 @@ export default async function handler(req, res) {
   const remainingMs = () => TOTAL_RESPONSE_BUDGET_MS - (Date.now() - startedAt);
   const body = req.body && typeof req.body === "object" ? req.body : {};
   const text = String(body?.request?.command || body?.request?.original_utterance || "").trim();
+  console.log("[ALICE_DIAG] Request parsed", {
+  hasBody: !!req.body,
+  bodyKeys: Object.keys(body),
+  hasRequest: !!body.request,
+  textLength: text.length
+  });
   const oldHistory = safeHistory(body?.state?.session?.history);
 
   if (!text) {
